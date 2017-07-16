@@ -9,6 +9,8 @@ URL_KPLAN3 = "https://www.wealthmagik.com/FundInfo/FundProfile-KAsset-MIXBAL-K%2
 ID_NAME_NAV_VALUE = "ctl00_ContentPlaceHolder1_lblNAV"
 ID_NAME_NAV_CHANGED = "ctl00_ContentPlaceHolder1_lblNAVChange"
 
+FUND_NAME = "KPLAN3"
+
 
 class ReceiveDataView(RetrieveAPIView):
     def get(self, *args, **kwargs):
@@ -20,11 +22,14 @@ class ReceiveDataView(RetrieveAPIView):
         data = {}
 
         if nav_changed < 0:
-            data['flag'] = "Decrease"
+            data['value1'] = "Decrease"
         else:
-            data['flag'] = "Increase"
+            data['value1'] = "Increase"
 
-        data['nav_value'] = nav_value
-        data['nav_changed'] = nav_changed
+        data['value2'] = nav_value
+        data['value3'] = nav_changed
+
+        webhook_url = "https://maker.ifttt.com/trigger/{}/with/key/jLXW-pdOf49SN2PvqvtchnD-3ZULlxoCtrY58Uo-lW5".format(FUND_NAME)
+        requests.post(webhook_url, data)
 
         return Response(status=status.HTTP_200_OK, data=data)
